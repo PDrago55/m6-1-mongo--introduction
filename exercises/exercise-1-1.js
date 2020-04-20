@@ -13,7 +13,7 @@ const dbFunction = async (dbName, collection, item) => {
   //close the connection to DB server
 
   client.close();
-  console.log("disconnected");
+  console.log("disconnected- here?");
 };
 
 dbFunction("exercises", "one", { name: "Buck Rogers" });

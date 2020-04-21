@@ -22,27 +22,28 @@ const createGreeting = async (req, res) => {
   console.log("disconnected");
 };
 
-// const getGreeting = async (req, res) => {
-//   const { _id } = req.params;
+const getGreeting = async (req, res) => {
+  const { _id } = req.params;
 
-//   const client = new MongoClient("mongodb://localhost:27017", {
-//     useUnifiedTopology: true,
-//   });
+  const client = new MongoClient("mongodb://localhost:27017", {
+    useUnifiedTopology: true,
+  });
 
-//   await client.connect();
-//   const db = client.db("Greetings");
+  await client.connect();
+  const db = client.db("Greetings");
 
-//   db.collection("greetings").findOne(
-//     { _id: _id.toUpperCase() },
+  db.collection("greetings").findOne(
+    { _id: _id.toUpperCase() },
 
-//     (err, result) => {
-//       result
-//         ? res.status(200).json({ status: 200, _id, data: result })
-//         : res.status(404).json({ status: 404, _id, data: "Not Found" });
-//     }
-//   );
-//   client.close();
-// };
+    (err, result) => {
+      result
+        ? res.status(200).json({ status: 200, _id, data: result })
+        : res.status(404).json({ status: 404, _id, data: "Not Found" });
+      client.close();
+    }
+  );
+  client.close();
+};
 
 const moreGreetings = async (req, res) => {
   // create a new client
@@ -70,4 +71,4 @@ const moreGreetings = async (req, res) => {
     });
 };
 
-module.exports = { createGreeting, moreGreetings };
+module.exports = { createGreeting, getGreeting, moreGreetings };

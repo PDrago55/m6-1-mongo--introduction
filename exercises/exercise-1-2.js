@@ -15,7 +15,6 @@ const getCollection = async (req, res) => {
     .collection(collection)
     .find()
     .toArray((err, data) => {
-      //   console.log("my data", data);
       if (err) {
         res.status(400).json({ status: 400, connection: "error" });
       } else {

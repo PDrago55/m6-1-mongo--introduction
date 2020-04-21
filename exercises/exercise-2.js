@@ -1,9 +1,10 @@
 const { MongoClient } = require("mongodb");
 const assert = require("assert");
-const client = new MongoClient("mongodb://localhost:27017", {
-  useUnifiedTopology: true,
-});
+
 const createGreeting = async (req, res) => {
+  const client = new MongoClient("mongodb://localhost:27017", {
+    useUnifiedTopology: true,
+  });
   try {
     await client.connect();
     console.log("connected");
@@ -33,6 +34,7 @@ const getGreeting = async (req, res) => {
 
   db.collection("greetings").findOne(
     { _id: _id.toUpperCase() },
+
     (err, result) => {
       result
         ? res.status(200).json({ status: 200, _id, data: result })
@@ -42,4 +44,30 @@ const getGreeting = async (req, res) => {
   );
 };
 
-module.exports = { createGreeting, getGreeting };
+const moreGreetings = async (req, res) => {
+  // create a new client
+  const client = new MongoClient("mongodb://localhost:27017", {
+    useUnifiedTopology: true,
+  });
+
+  await client.connect();
+  const db = client.db("Greetings");
+
+  db.collection("greeting")
+    .find()
+    .toArray((err, result) => {
+      if (result.length) {
+        const start = Number(req.query.start) || 0;
+        const cleanStart = start > -1 && start < result.length ? start : 0;
+        const end = cleanStart + (Number(req.query.limit) || 25);
+        const cleanEnd = end > result.length ? result.length - 1 : end;
+        const data = result.slice(cleanStart, cleanEnd);
+        res.status(200).json({ status: 200, data });
+      } else {
+        res.status(404).json({ status: 404, data: "Not Found" });
+      }
+      client.close();
+    });
+};
+
+module.exports = { createGreeting, getGreeting, moreGreetings };
